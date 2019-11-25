@@ -7,6 +7,8 @@ import {
 import Home from './pages/Home';
 import About from './pages/About';
 import Layout from './components/Layout';
+import DiscoButtonsHooks from './components/DiscoButtonsHooks';
+
 
 
 
@@ -20,6 +22,7 @@ function App() {
           <Route path="/" component={Home} />
         </Switch> 
       </Router>
+      <DiscoButtonsHooks/>
     </>
   );
 }
