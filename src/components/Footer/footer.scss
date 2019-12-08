@@ -1,0 +1,19 @@
+/********* Variables *******/
+$primary-color:#24305E;
+$accent-color:#F76C6C;
+
+.footer{
+    z-index:1;
+    background-color: $accent-color;
+    display: flex;
+    height: 50px;
+    -moz-box-shadow:    1px 1px 15px black;
+    -webkit-box-shadow: 1px 1px 15px black;
+    box-shadow:         1px 1px 15px black;
+
+
+    &_list{
+        display: flex;
+        justify-content: space-between;
+    }
+}

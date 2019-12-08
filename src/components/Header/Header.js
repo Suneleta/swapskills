@@ -1,14 +1,21 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
+import { logout } from '../../services/auth';
+import './header.scss';
+
+const Header = ({ history }) => {
+  const user = useSelector(state => state.user);
 
 
-const Header = () => {
   return (
-    <ul>
-      <li><Link to="/">Home</Link></li>
-      <li><Link to="/about">About</Link></li>
-    </ul>
+    <div className="header">
+      <div className="header_logo">
+        <Link to="/">SwapSkills</Link>
+       </div>
+    </div>
   );
 }
  
-export default Header;
+export default withRouter(Header);
