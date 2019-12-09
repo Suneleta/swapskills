@@ -66,12 +66,9 @@ const Signup = ({ history }) => {
 
     const downloadURL = await uploadFile(file, setFileUploadPercent);
 
-    const result = await addItem(
-      'users',
-      { file: downloadURL }
-    );
+    
   //  console.log('result: ',downloadURL);
-    if (result) {
+    if (downloadURL) {
       setFileUploadPercent('');
       setFormData({ ...formData, file: downloadURL })
     }

@@ -1,9 +1,8 @@
 import firebase from 'firebase';
-import uuidv1 from 'uuid/v1';
 
 function uploadFile(file, setFileUploadPercent) {
   return new Promise((resolve, reject) => {
-    const storageRef = firebase.storage().ref().child(`photos${uuidv1()}-${file.name}`);
+    const storageRef = firebase.storage().ref(`${file.name}`);
 
     const uploadTask = storageRef.put(file);
 

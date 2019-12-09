@@ -48,6 +48,12 @@ async function addItemWithId(collection, item, id) {
   const result = await db.collection(collection).doc(id).set(item);
   return !result;
 }
+async function updateItem(collection, item, id) {
+  const db = getDbInstance();
+  const result = await db.collection(collection).doc(id).update(item);
+  return !result;
+}
+
 
 async function getItem(collection, itemId) {
   const db = getDbInstance();
@@ -71,5 +77,6 @@ export {
   getItem,
   getAllRealTime,
   deleteItem,
-  addItemWithId
+  addItemWithId,
+  updateItem
 }
