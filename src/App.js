@@ -14,19 +14,19 @@ import Welcome from './pages/Welcome';
 import Profile from './pages/Profile';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
-import AddSkills from './pages/AddSkills';
-import AddInterests from './pages/AddInterests';
+import Skills from './pages/Skills';
+import Interests from './pages/Interests';
 import EditProfile from './pages/EditProfile';
+import Details from './pages/Details';
+
 
 function App({ setUserRedux }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const cancelObserver = registerAuthObserver(async (user) => {
-      console.log("TCL: cancelObserver -> user", user)
       if (user) {
         const usuario = await getItem('users', user.uid);
-        console.log("TCL: cancelObserver -> usuario", usuario)
         if (usuario) {
           setUserRedux(usuario);
         } else {
@@ -41,7 +41,7 @@ function App({ setUserRedux }) {
     return () => {
       cancelObserver();
     }
-  }, []);
+  }, [setUserRedux]);
   if (isLoading) return <div>Loading...</div>
 
   return (
@@ -51,9 +51,10 @@ function App({ setUserRedux }) {
           <Route path="/signup" component={Signup} />
           <Route path="/login" component={Login} />
           <Route path="/profile" component={Profile} />
-          <Route path="/addskills" component={AddSkills} />
-          <Route path="/addinterests" component={AddInterests} />
+          <Route path="/skills" component={Skills} />
+          <Route path="/interests" component={Interests} />
           <Route path="/editprofile" component={EditProfile} />
+          <Route path="/details/:id" component={Details} />
           <Route path="/" component={Welcome} />
         </Switch>
       </Router>
@@ -68,3 +69,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(null, mapDispatchToProps)(App);
+

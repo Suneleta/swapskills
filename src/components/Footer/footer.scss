@@ -1,19 +1,44 @@
 /********* Variables *******/
-$primary-color:#24305E;
-$accent-color:#F76C6C;
+$primary-color:#262E51;
+$secondary-color: lightcyan;
+$accent-color:#D2386A;
+
 
 .footer{
     z-index:1;
     background-color: $accent-color;
     display: flex;
     height: 50px;
-    -moz-box-shadow:    1px 1px 15px black;
-    -webkit-box-shadow: 1px 1px 15px black;
-    box-shadow:         1px 1px 15px black;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 
+    a,span{
+        text-decoration: none;
+        color: lightcyan;
+        font-weight: 600;
+        margin: 15px 20px;
+    }
+    
+    &_content{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
 
+  
+    }
     &_list{
         display: flex;
         justify-content: space-between;
     }
 }
+@media only screen and (max-width: 768px) {
+    .footer {
+        .powered{
+         font-size: 12px;
+         text-align: right;
+        }
+     }
+   }

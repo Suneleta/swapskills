@@ -1,91 +1,201 @@
-.welcome{
-    &_hero{
-        background-image: url(http://violetanoy.com/wp-content/uploads/2019/06/people-community-communication-together-hero-illustration-violeta-noy-4.jpg);
-        width:100%;
-        height: 70vh;
-        background-position: center;
-        min-height:calc(100vh - 276px);
-        background-size:100%;
-        background-repeat: no-repeat;
-        -moz-box-shadow:    1px 1px 15px black;
-        -webkit-box-shadow: 1px 1px 15px black;
-        box-shadow:         1px 1px 15px black;
-
-        &_title{
-            position: absolute;
-            width: 26%;
-            top: 30%;
-            color: #24305E;
-            padding: 20px;
-            font-size: 25px;
-        }
-    }
-        &_buttons{
-            display: flex;
-            margin: 0 auto;
-            width: 20%;
-            justify-content: space-around;
-            padding:32px 0;
-            .signup,.login{
-                font-size: 22px;
-                padding: 20px;
-                border: 1px solid #A7CEE5;
-                color:#A7CEE5;
-                background-color: #24305E;
-                cursor: pointer;
-                text-decoration: none;
-
-            }
-        }
-    }
-
-
-
-body{
-    background-color: #24305E;
+* {
+    margin: 0;
+    padding: 0;
 }
-@media only screen and (max-width: 1024px) {
-    .welcome {
-        &_hero{
-            min-height: calc(100vh - 200px);
-            background-size: 150%;
-            height: 100%;
-            &_title{
-            font-size: 20px;
+#wrapper {
+    width: 100%;
+    height: 130vh;
+    background: lightcyan;
+    
+    .welcome{
+    &_text{
+        text-align: center;
+        margin: 40px 0;
+        color:#262E51;
+        font-size: 22px;
+        }
+    &_buttons{
+        justify-content: space-around;
+        display: flex;
+
+        a{
+            
+            text-decoration: none;
+            font-weight: 700;
+            padding: 20px 25px;
+            border-radius: 20px;
+            background-color: #262E51;
+            color: lightcyan;
+            border: 2px solid #262E51;
+
+            &:hover{
+                border: 2px solid #262E51;
+                color: #262E51;
+                background-color: lightcyan;
+
+            }
+        }
+        .login{
+            background-color: #D2386A;
+            border: 2px solid #D2386A;
+            &:hover{
+                border: 2px solid #D2386A;
+                color: #D2386A
             }
         }
     }
-  }
+}
+}
+#svg_container {
+    width: calc(100vh - 120px);
+    height: calc(100vh - 240px);
+    margin: 0 auto;
+    padding-top: 20px;
+}
+@font-face {
+    font-family: sofia3;
+    src: url(https://assets.pixlee.com/pixlee_fonts/sofia_regular.otf);
+}
+.sofia3 {
+    font-family: sofia3, sans-serif;
+}
+#button {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    padding: 13px 15px 12px 15px;
+    text-align: center;
+    color: #373C5E;
+    font-weight: bold;
+    font-family: sofia3, sans-serif;
+    text-transform: uppercase;
+    font-size: 10px;
+    width: 100px;
+    background: #d43469;
+    background: -moz-linear-gradient(45deg,#d43469 0%,#ed5582 100%);
+    background: -webkit-linear-gradient(45deg,#d43469 0%,#ed5582 100%);
+    background: linear-gradient(45deg,#d43469 0%,#ed5582 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d43469',endColorstr='#ed5582',GradientType=1);
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+#Layer_2.active {
+    animation-duration: 50s;
+    -webkit-animation-duration: 50s;
+    -moz-animation-duration: 50s;
+    animation-name: spin_backward;
+    -webkit-animation-name: spin_backward;
+    -moz-animation-name: spin_backward;
+    animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-timing-function: linear;
+    transform-origin: center center;
+    -webkit-transform-origin: center center;
+    -moz-transform-origin: center center;
+}
+#Layer_3.active {
+    animation-duration: 40s;
+    -webkit-animation-duration: 40s;
+    -moz-animation-duration: 40s;
+    animation-name: spin_forward;
+    -webkit-animation-name: spin_forward;
+    -moz-animation-name: spin_forward;
+    animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-timing-function: linear;
+    transform-origin: center center;
+    -webkit-transform-origin: center center;
+    -moz-transform-origin: center center;
+}
+#Layer_4.active {
+    animation-duration: 20s;
+    -webkit-animation-duration: 20s;
+    -moz-animation-duration: 20s;
+    animation-name: spin_backward;
+    -webkit-animation-name: spin_backward;
+    -moz-animation-name: spin_backward;
+    animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-timing-function: linear;
+    transform-origin: center center;
+    -webkit-transform-origin: center center;
+    -moz-transform-origin: center center;
+}
+@keyframes spin_forward {
+    from {
+        transform: rotate(0deg);
+   }
+    to {
+        transform: rotate(360deg);
+   }
+}
+@-webkit-keyframes spin_forward {
+    from {
+        transform: rotate(0deg);
+   }
+    to {
+        transform: rotate(360deg);
+   }
+}
+@-moz-keyframes spin_forward {
+    from {
+        transform: rotate(0deg);
+   }
+    to {
+        transform: rotate(360deg);
+   }
+}
+@keyframes spin_backward {
+    from {
+        transform: rotate(360deg);
+   }
+    to {
+        transform: rotate(0deg);
+   }
+}
+@-webkit-keyframes spin_backward {
+    from {
+        transform: rotate(360deg);
+   }
+    to {
+        transform: rotate(0deg);
+   }
+}
+@-moz-keyframes spin_backward {
+    from {
+        transform: rotate(360deg);
+   }
+    to {
+        transform: rotate(0deg);
+   }
+}
+
 @media only screen and (max-width: 768px) {
-    .welcome {
-        &_hero{
-            min-height: calc(100vh - 211px);
-            background-size: 160%;
-            &_title{
-            display: none;
-            }
-        }
+
+#svg_container {
+    width: calc(100vh - 240px);
+    height: calc(100vh - 240px);
+}
+#wrapper{
+    height: 110vh;
+    .welcome_text{
+        font-size: 16px;
     }
-  }
-  @media only screen and (max-width: 425px) {
-    .welcome {
-        &_hero{
-            min-height: calc(100vh - 200px);
-            background-size: 240%;
-            &_title{
-            display: none;
-            }
-        }
-    }
-  }
-  @media only screen and (max-width: 375px) {
-    .welcome {
-        &_hero{
-            min-height: calc(100vh - 200px);
-            background-size: 300%;
-            &_title{
-            display: none;
-            }
-        }
-    }
-  }
+}
+
+}

@@ -6,6 +6,10 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 import { login } from '../../services/auth';
+import { useDispatch } from 'react-redux';
+import { 
+  setUser
+} from '../../redux/actions/userActions';
 
 import '../Signup/Signup.scss';
 
@@ -13,6 +17,8 @@ import '../Signup/Signup.scss';
 const Login = ({ history }) => {
   const [formData, setFormData] = useState({ email: '', password: ''});
   const [error, setError] = useState('');
+  const dispatch = useDispatch();
+
 
   const handleSubmitForm = async (event) => {
     event.preventDefault();
@@ -25,10 +31,18 @@ const Login = ({ history }) => {
     } else {
       const result = await login(email, password);
       if (result) {
-        alert("welcome back sunshine")
-         history.push('/profile')
-      } else {
-        alert("first time I ever see you dude")
+        const userToRedux = {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          district: formData.district || 'Eixample',
+          interest: formData.interest,
+          skill: formData.skill,
+          file: formData.file || 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'
+
+        }
+        dispatch(setUser(userToRedux));
+        history.push('/profile');
       }
     }
   }

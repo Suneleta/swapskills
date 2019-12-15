@@ -8,8 +8,9 @@ function parseDoc(doc) {
   }
 }
 
-let db;
+
 function getDbInstance() {
+  let db;
   if (!db || db._isTerminated) {
     db = firebase.firestore();
   }
@@ -28,6 +29,22 @@ async function getAll(collection) {
   return results;
 }
 
+async function getAllFiltered({ collection, filterDistrict, filterSkill, order, callback }) {
+  console.log(filterDistrict, filterSkill);
+  const db = getDbInstance();
+  const dbCollection = db.collection(collection);
+  const collectionFiltered = dbCollection
+  .where(filterDistrict.field, filterDistrict.condition, filterDistrict.value)
+  .where(filterSkill.field, filterSkill.condition, filterSkill.value);
+  const collectionOrdered = collectionFiltered.orderBy(order);
+  const llamaACallBackWithData = (collectionData) => callback(collectionData);
+  collectionOrdered.onSnapshot(llamaACallBackWithData);
+  if (collectionFiltered.exists) {
+    return parseDoc(collectionFiltered);
+  }
+  return null;
+}
+
 async function getAllRealTime({ collection, filters, order, callback }) {
   const db = getDbInstance();
   const dbCollection = db.collection(collection);
@@ -35,6 +52,7 @@ async function getAllRealTime({ collection, filters, order, callback }) {
   const collectionOrdered = collectionFiltered.orderBy(order);
   const llamaACallBackWithData = (collectionData) => callback(collectionData)
   collectionOrdered.onSnapshot(llamaACallBackWithData)
+
 }
 
 async function addItem(collection, item) {
@@ -48,10 +66,10 @@ async function addItemWithId(collection, item, id) {
   const result = await db.collection(collection).doc(id).set(item);
   return !result;
 }
-async function updateItem(collection, item, id) {
+async function updateItem(collection, item) {
   const db = getDbInstance();
-  const result = await db.collection(collection).doc(id).update(item);
-  return !result;
+  const result = await db.collection(collection).update(item)
+  return !!result.id;
 }
 
 
@@ -71,6 +89,7 @@ async function deleteItem(collection, itemId) {
   return !result;
 }
 
+
 export {
   getAll,
   addItem,
@@ -78,5 +97,6 @@ export {
   getAllRealTime,
   deleteItem,
   addItemWithId,
-  updateItem
+  updateItem,
+  getAllFiltered
 }

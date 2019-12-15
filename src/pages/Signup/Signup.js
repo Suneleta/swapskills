@@ -1,5 +1,10 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { 
+  setUser
+} from '../../redux/actions/userActions';
+
 import FormInput from '../../components/FormInput';
 import FormInputFile from '../../components/FormInputFile';
 import FormSelectDistrict from '../../components/FormSelectDistrict';
@@ -20,11 +25,14 @@ const Signup = ({ history }) => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', district: '', interest: '', skill: '', file: '' });
   const [error, setError] = useState('');
   const [fileUploadPercent, setFileUploadPercent] = useState('');
+  const dispatch = useDispatch();
 
 
   useEffect(() => {
     if (cancelObserver) cancelObserver();
     cancelObserver = registerAuthObserver(async (user) => {
+      if (!'users') return <div>Loading...</div>; 
+
       if (user) {
         const profile = await getItem('users', user.uid);
         if (!profile) {
@@ -40,7 +48,18 @@ const Signup = ({ history }) => {
             user.uid
           );
           if (result) {
-                 history.push('/profile');
+            const userToRedux = {
+              name:formData.name,
+              email: formData.email,
+              password: formData.password,
+              district: formData.district || 'Eixample',
+              interest: formData.interest,
+              skill: formData.skill,
+              file: formData.file || 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'
+
+            }
+            dispatch(setUser(userToRedux));
+            history.push('/profile');
           }
         }
       }
@@ -74,10 +93,9 @@ const Signup = ({ history }) => {
     }
   };
 
-
-
   return(
     <>
+    <body>
     <Header />
     <div className="signup">
             <form onSubmit={handleSubmitForm}>
@@ -121,6 +139,7 @@ const Signup = ({ history }) => {
             </form>
           </div>
         <Footer />
+        </body>
       </>
   );
 }

@@ -4,7 +4,7 @@ import "./formselect.scss";
 const FormSelectDistrict = ({ value, onChange }) => {
   return (
     <>
-        <select value={value} onChange={event => onChange(event.target.value)}>
+        <select id="district" value={value} onChange={event => onChange(event.target.value)}>
             <option value="Eixample">Eixample</option>
             <option value="Ciutat Vella">Ciutat Vella</option>
             <option value="Sants-Montjuic">Sants-Montjuic</option>

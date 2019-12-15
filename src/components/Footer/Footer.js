@@ -16,11 +16,13 @@ const Footer = ({ history }) => {
 
   return (
     <div className="footer">
-        {user 
-          ? <span>{user.name} <button onClick={handleLogout}>Logout</button></span>
+        {user
+
+          ? <div className="footer_content"><Link to="/profile">{user.name}</Link><a onClick={handleLogout}>Logout</a></div>
           : (
               <>
                 <span><Link to="/">Home</Link></span>
+                <a href="https://suneleta.github.io/Portfolio/index.html" className="powered">Powered by Skylab Coder Eleni Taki</a>
               </>
             )
         }

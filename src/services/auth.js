@@ -19,7 +19,6 @@ function registerAuthObserver(callback) {
   return firebase.auth().onAuthStateChanged(callback);
 }
 
-
 export {
   signup,
   logout,
