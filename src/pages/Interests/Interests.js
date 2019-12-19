@@ -6,14 +6,23 @@ import 'firebase/firestore';
 import { Link, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { addItem, deleteItem } from '../../services/database';
+import { registerAuthObserver } from '../../services/auth';
+
 
 import '../Skills/skills.scss';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
+function parseDoc(doc) {
+  return {
+    id: doc.id,
+    ...doc.data(),
+  };
+}
 
-let db;
+
 function getDbInstance() {
+  let db;
   if (!db || db._isTerminated) {
     db = firebase.firestore();
   }
@@ -39,80 +48,69 @@ const Interest = ({ history }) => {
     history.push(`/details/${id}`);
   };
 
+  let cancelObserver;
+
   useEffect(() => {
     console.log(idReceiver);
     console.log(id);
-    /*  getAllFiltered({
-      collection: 'users',
-      filterDistrict: { field: 'district', condition: '==', value: district },
-      filterSkill: { field: 'skill', condition: '==', value: interest },
-      order: 'timestamp',
-      callback: (collectionData) => {
-        const newResults = [];
-        collectionData.forEach((document) => {
-          const data = document.data();
-          const userDate = new Date(data.timestamp);
-          data.date = userDate.toLocaleDateString();
-          data.time = userDate.toLocaleTimeString();
-          newResults.push(data);
+    if (cancelObserver) cancelObserver();
+    cancelObserver = registerAuthObserver(async (user) => {
+      const db = getDbInstance();
+      const usersRef = db.collection('users');
+      const query = usersRef
+        .where('district', '==', district)
+        .where('skill', '==', interest)
+        .get()
+        .then((snapshot) => {
+          if (snapshot.empty) {
+            console.log('No matching documents.');
+            return;
+          }
+          const newResults = [];
+          snapshot.forEach((doc) => {
+            newResults.push({
+              id: doc.id,
+              ...doc.data(),
+            });
+            console.log(newResults);
+          });
+
+          setResults(newResults);
+        })
+        .catch((err) => {
+          console.log('Error getting documents', err);
         });
-        setResults(newResults);
-        console.log(newResults);
-      },
+
+      /*  const matchesRef = db.collection('matches');
+      const queryM = matchesRef
+        .where('idReceiver', '==', id)
+        .get()
+        .then((snapshot) => {
+          if (snapshot.empty) {
+            console.log('No matching documents.');
+          }
+          const matchedResults = [];
+          snapshot.forEach((doc) => {
+            matchedResults.push({
+              id: doc.id,
+              ...doc.data(),
+            });
+            matchedResultIds.push({
+              id: doc.id,
+            });
+          });
+
+          setMatchedResults(matchedResults);
+          setMatchedResultIds(matchedResultIds);
+          console.log(matchedResultIds);
+        })
+        .catch((err) => {
+          console.log('Error getting documents', err);
+        }); */
+      return () => {
+        cancelObserver();
+      };
     });
-
-  */
-    const db = getDbInstance();
-    const usersRef = db.collection('users');
-    const query = usersRef
-      .where('district', '==', district)
-      .where('interest', '==', skill)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.empty) {
-          console.log('No matching documents.');
-          return;
-        }
-        const newResults = [];
-        snapshot.forEach((doc) => {
-          newResults.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-        });
-
-        setResults(newResults);
-      })
-      .catch((err) => {
-        console.log('Error getting documents', err);
-      });
-
-    const matchesRef = db.collection('matches');
-    const queryM = matchesRef
-      .where('idReceiver', '==', id)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.empty) {
-          console.log('No matching documents.');
-        }
-        const matchedResults = [];
-        snapshot.forEach((doc) => {
-          matchedResults.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-          matchedResultIds.push({
-            id: doc.id,
-          });
-        });
-
-        setMatchedResults(matchedResults);
-        setMatchedResultIds(matchedResultIds);
-        console.log(matchedResultIds);
-      })
-      .catch((err) => {
-        console.log('Error getting documents', err);
-      });
   }, []);
 
 
@@ -135,7 +133,6 @@ const Interest = ({ history }) => {
       console.log('idReciever', idReceiver);
       console.log('idGiver', idGiver);
       const db = getDbInstance();
-
       db.collection('matches')
         .where('id', '==', idGiver)
         .where('idReceiver', '==', id)

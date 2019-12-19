@@ -3,13 +3,13 @@
     padding: 0;
 }
 .welcome-page{
-    height: 140vh;
+    min-height: 140vh;
     .footer{
         position: absolute;
         bottom: 0;
     }
     @media only screen and (max-width: 768px) {
-        height: 100vh;
+        min-height: 100vh;
     }
 
 }
@@ -207,7 +207,7 @@
     height: calc(100vh - 240px);
 }
 #wrapper{
-    height: 110vh;
+    min-height: 110vh;
     .welcome_text{
         font-size: 16px;
     }

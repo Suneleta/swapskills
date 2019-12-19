@@ -3,6 +3,7 @@
     width: 100%;
     padding-top: 10%;
     text-align: center;
+    font-family: 'Roboto';
    
 }
 .skill-container{
@@ -10,7 +11,7 @@
 }
 .interest-container{
     background-color:#D2386A;
-    color: lightcyan;
+    color: lightcyan;  
 }
 .hidden{
      display: none;
@@ -23,8 +24,8 @@
     border: 1px solid #D2386A;
 }
 .skill, .interest{
-    font-weight: bold;
-    font-size: 22px;
+    padding-top: 2%;
+    font-size: 23px;
 }
 .skills-page,
 .interests-page{
@@ -36,7 +37,7 @@
 .interests-page{
     background-color: lightcyan;
     .petitions-container{
-        height: 60vh;
+        min-height: 60vh;
         color:#262E51;
     
         #petitions-list{
@@ -50,6 +51,9 @@
                 button{
                     background: #262E51;
                     color:lightcyan;
+                    margin-top: 10px;
+                    border:1px solid #262E51 ;
+
                     &:hover,
                     &:active{
                         background-color: lightcyan;
@@ -64,20 +68,19 @@
 .petitions-container{
     color:lightcyan;
     padding: 0 20px;
-    height: 60vh;
+    min-height: 60vh;
+    font-family:'Roboto';
 
     #petitions-list{
         margin-top: 20px;
         a{
             text-decoration: underline;
-            margin:  2% 0;;
+            padding: 15px 0 0;
         }
         .petitions-list-item{
-            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             padding-bottom: 15px;
-            margin-bottom: 10px;
             border-bottom: 1px solid lightcyan;
             a:first-child{
                 width:50%
@@ -90,6 +93,7 @@
                 border: none;
                 color:#262E51;
                 font-weight: 600;
+                margin-top: 10px;
                 &:hover,
                 &:active{
                     background-color: #262E51;

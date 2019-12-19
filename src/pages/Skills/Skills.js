@@ -6,14 +6,24 @@ import 'firebase/firestore';
 import { Link, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { addItem } from '../../services/database';
+import { registerAuthObserver } from '../../services/auth';
+
 
 import './skills.scss';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 
-let db;
+function parseDoc(doc) {
+  return {
+    id: doc.id,
+    ...doc.data(),
+  };
+}
+
+
 function getDbInstance() {
+  let db;
   if (!db || db._isTerminated) {
     db = firebase.firestore();
   }
@@ -39,84 +49,96 @@ const Skill = ({ history }) => {
   };
 
   useEffect(() => {
-  /*  getAllFiltered({
-      collection: 'users',
-      filterDistrict: { field: 'district', condition: '==', value: district },
-      filterSkill: { field: 'skill', condition: '==', value: interest },
-      order: 'timestamp',
-      callback: (collectionData) => {
-        const newResults = [];
-        collectionData.forEach((document) => {
-          const data = document.data();
-          const userDate = new Date(data.timestamp);
-          data.date = userDate.toLocaleDateString();
-          data.time = userDate.toLocaleTimeString();
-          newResults.push(data);
-        });
-        setResults(newResults);
-        console.log(newResults);
-      },
-    });
+    if (!'users') return <div className="loading">Loading...</div>;
 
-  */
-    const db = getDbInstance();
-    const usersRef = db.collection('users');
-    const query = usersRef
-      .where('district', '==', district)
-      .where('skill', '==', interest)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.empty) {
-          console.log('No matching documents.');
-          return;
-        }
-        const newResults = [];
-        snapshot.forEach((doc) => {
-          newResults.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-        });
-
-        console.log(newResults);
-        setResults(newResults);
-      })
-      .catch((err) => {
-        console.log('Error getting documents', err);
-      });
-    if (id) {
-      const matchesRef = db.collection('matches');
-      const queryM = matchesRef
-        .where('idGiver', '==', id)
+    if (user) {
+      console.log(skill);
+      const db = getDbInstance();
+      const usersRef = db.collection('users');
+      const query = usersRef
+        .where('district', '==', district)
+        .where('interest', '==', skill)
         .get()
         .then((snapshot) => {
           if (snapshot.empty) {
             console.log('No matching documents.');
             return;
           }
-          const matchedResults = [];
+          const newResults = [];
           snapshot.forEach((doc) => {
-            matchedResults.push({
+            newResults.push({
               id: doc.id,
               ...doc.data(),
             });
           });
 
-          setMatchedResults(matchedResults);
-          console.log(matchedResults);
+          console.log(newResults);
+          setResults(newResults);
         })
         .catch((err) => {
           console.log('Error getting documents', err);
         });
-
-      const idGiver = id;
-      console.log(id);
-      console.log(idGiver);
-    } else {
-      return <div>Loading..</div>;
     }
+
+
+    return () => {
+    };
   }, []);
+  const db = getDbInstance();
+
+  const matchesRef = db.collection('matches');
+  const queryM = matchesRef
+    .where('id', '==', id)
+    .where('idReceiver', '==', idReceiver)
+    .get()
+    .then((snapshot) => {
+      if (snapshot.empty) {
+        console.log('No matching documents.');
+        return;
+      }
+      snapshot.forEach((doc) => {
+        console.log(doc.id, ' => ', doc.data());
+        const specificMatchId = doc.id;
+      });
+      console.log(specificMatchId);
+      setSpecificMatchId(specificMatchId);
+      db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
+        stateReceiver: 'accepted',
+      });
+    })
+    .catch((err) => {
+      console.log('Error getting documents', err);
+    });
   const handleAccept = async (idReceiver, stateGiver) => {
+    //* Process to create, check matches and update them */
+    //* Step 1 Getting the match of this giver and this receiver together */
+
+    const matchesRef = db.collection('matches');
+    const queryM = matchesRef
+      .where('id', '==', id)
+      .where('idReceiver', '==', idReceiver)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.empty) {
+          console.log('No matching documents.');
+          return;
+        }
+        snapshot.forEach((doc) => {
+          console.log(doc.id, ' => ', doc.data());
+          const specificMatchId = doc.id;
+          setSpecificMatchId(specificMatchId);
+          console.log(specificMatchId);
+        });
+        console.log(specificMatchId);
+        db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
+          stateReceiver: 'accepted',
+        });
+      })
+      .catch((err) => {
+        console.log('Error getting documents', err);
+      });
+    //* Step 2 If there is no previous match with this giver and receiver create one  */
+
     if (!matchedResults) {
       const result = await addItem(
         'matches',
@@ -130,54 +152,19 @@ const Skill = ({ history }) => {
         setIdReceiver(idReceiver);
       }
     } else {
-      console.log('id:', id);
-      console.log('idReciever', idReceiver);
-      console.log('idGiver', idGiver);
-
-      db.collection('matches')
-        .where('id', '==', idGiver)
-        .where('idReceiver', '==', id)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, ' => ', doc.data());
-            specificMatchId = doc.id;
-          });
-          console.log(specificMatchId);
-          setSpecificMatchId(specificMatchId);
-          db.collection('matches').doc(specificMatchId).update({
-            stateReceiver: 'accepted',
-          });
-        })
-        .catch((error) => {
-          console.log('Error getting documents: ', error);
-        });
-
       console.log(specificMatchId);
-
-      await db.collection('matches').doc(specificMatchId).update({
+      db.collection('matches').doc('XfWac63yH41A8P7hYtLK').update({
         stateReceiver: 'accepted',
       });
-      console.log(stateReceiver);
-      document.getElementById('toggle').classList.add('block');
-      document.getElementById('accept').classList.add('hidden');
-      document.getElementById('deny').classList.add('hidden');
-      document.getElementById('result').classList.add('match');
+      setSpecificMatchId(specificMatchId);
+      console.log(specificMatchId);
     }
+    //* END OF Process to create, check matches and update them */
   };
 
   const handleDeny = async (idReceiver) => {
-    const idGiver = id;
 
-    const result = await addItem(
-      'matches',
-      {
-        idGiver, idReceiver, skill, stateGiver, stateReceiver,
-      },
-    );
-    if (result) {
-    }
+
   };
   return (
     <>

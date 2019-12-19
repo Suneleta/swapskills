@@ -36,7 +36,7 @@ const Signup = ({ history }) => {
   useEffect(() => {
     if (cancelObserver) cancelObserver();
     cancelObserver = registerAuthObserver(async (user) => {
-      if (!'users') return <div>Loading...</div>;
+      if (!'users') return <div className="loading">Loading...</div>;
 
       if (user) {
         const profile = await getItem('users', user.uid);
