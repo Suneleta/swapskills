@@ -23,10 +23,13 @@
         margin: 40px 0;
         color:#262E51;
         font-size: 22px;
+        font-family:'Roboto';
         }
     &_buttons{
         justify-content: space-around;
         display: flex;
+        font-family:'Roboto';
+
 
         .login, .signup{
             font-size: 22px;

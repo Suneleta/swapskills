@@ -8,14 +8,13 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 
-let db;
 function getDbInstance() {
+  let db;
   if (!db || db._isTerminated) {
     db = firebase.firestore();
   }
   return db;
 }
-
 function Profile({ match, history }) {
   const user = useSelector((state) => state.user);
   const {
@@ -58,7 +57,7 @@ function Profile({ match, history }) {
 
     db.collection('matches')
 
-      .where('id', '==', id)
+      .where('idReceiver', '==', id)
       .where('stateGiver', '==', 'accepted')
       .where('stateReceiver', '==', 'accepted')
       .get()

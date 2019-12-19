@@ -41,7 +41,7 @@ const Interest = ({ history }) => {
   const [stateGiver, setStateGiver] = useState('pending');
   const [stateReceiver, setStateReceiver] = useState('pending');
   const [idReceiver, setStateIdReceiver] = useState(id);
-  const [idGiver, setStateIdGiver] = useState('');
+  const [idGiver, setIdGiver] = useState('');
 
 
   const enterProfile = (id) => {
@@ -80,33 +80,6 @@ const Interest = ({ history }) => {
         .catch((err) => {
           console.log('Error getting documents', err);
         });
-
-      /*  const matchesRef = db.collection('matches');
-      const queryM = matchesRef
-        .where('idReceiver', '==', id)
-        .get()
-        .then((snapshot) => {
-          if (snapshot.empty) {
-            console.log('No matching documents.');
-          }
-          const matchedResults = [];
-          snapshot.forEach((doc) => {
-            matchedResults.push({
-              id: doc.id,
-              ...doc.data(),
-            });
-            matchedResultIds.push({
-              id: doc.id,
-            });
-          });
-
-          setMatchedResults(matchedResults);
-          setMatchedResultIds(matchedResultIds);
-          console.log(matchedResultIds);
-        })
-        .catch((err) => {
-          console.log('Error getting documents', err);
-        }); */
       return () => {
         cancelObserver();
       };
@@ -115,55 +88,59 @@ const Interest = ({ history }) => {
 
 
   const handleAccept = async (idGiver, stateReceiver, specificMatchId) => {
-    if (!matchedResults) {
+    //* **** GET MATCH BTWN THIS GIVER AND THIS RECEIVER --- ITS ID */
+    const db = getDbInstance();
+    const matchesRef = db.collection('matches');
+    const queryM = matchesRef
+      .where('id', '==', idGiver)
+      .where('idReceiver', '==', id)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.empty) {
+          console.log('No matching documents.');
+          return;
+        }
+        let specificMatchId;
+        snapshot.forEach((doc) => {
+          console.log(doc.id, ' => ', doc.data());
+          specificMatchId = doc.id;
+          console.log(specificMatchId);
+        });
+        setSpecificMatchId(specificMatchId);
+        console.log(specificMatchId);
+        db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
+          stateReceiver: 'accepted',
+        });
+      })
+      .catch((err) => {
+        console.log('Error getting documents', err);
+      });
+
+    //* IF THERE´S NO MATCH BTWN THIS GIVER AND RECEIVER CREATE ONE */
+
+    if (!specificMatchId) {
       const result = await addItem(
         'matches',
         {
-          id, idReceiver, interest, stateGiver, stateReceiver,
+          idGiver, id, interest, stateGiver, stateReceiver,
         },
       );
       if (result) {
         setStateGiver(stateGiver);
         setStateReceiver(stateReceiver);
         console.log(stateReceiver);
-        setStateIdGiver(idGiver);
+        setIdGiver(idGiver);
       }
-    } else {
-      console.log('id:', id);
-      console.log('idReciever', idReceiver);
-      console.log('idGiver', idGiver);
-      const db = getDbInstance();
-      db.collection('matches')
-        .where('id', '==', idGiver)
-        .where('idReceiver', '==', id)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, ' => ', doc.data());
-            const specificMatchId = doc.id;
-          });
-          console.log(specificMatchId);
-          setSpecificMatchId(specificMatchId);
-          db.collection('matches').doc(specificMatchId).update({
-            stateReceiver: 'accepted',
-          });
-        })
-        .catch((error) => {
-          console.log('Error getting documents: ', error);
-        });
+    }
+    //* IF THERE´S MATCH BTWN THIS GIVER AND RECEIVER UPDATE STATE*/
 
+    else {
       console.log(specificMatchId);
-      /*
-      const db = getDbInstance();
-      await db.collection('matches').doc(specificMatchId).update({
+      db.collection('matches').doc(specificMatchId).update({
         stateReceiver: 'accepted',
       });
-      console.log(stateReceiver);
-      document.getElementById('toggle').classList.add('block');
-      document.getElementById('accept').classList.add('hidden');
-      document.getElementById('deny').classList.add('hidden');
-      document.getElementById('result').classList.add('match'); */
+      setSpecificMatchId(specificMatchId);
+      console.log(specificMatchId);
     }
   };
 
