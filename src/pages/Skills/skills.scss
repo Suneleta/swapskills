@@ -1,18 +1,101 @@
 .skill-container,
 .interest-container{
-    background-color: white;
-    width: 50%;
-    margin: 5% auto;
-    height: 200px;
+    width: 100%;
+    padding-top: 10%;
+    text-align: center;
+   
 }
-
-    .hidden{
-        display: none;
-    }
-    .block{
-        display: block;
-    }
+.skill-container{
+    background-color: lightcyan ;
+}
+.interest-container{
+    background-color:#D2386A;
+    color: lightcyan;
+}
+.hidden{
+     display: none;
+}
+.block{
+    display: block;
+}
 
 .match{
     border: 1px solid #D2386A;
+}
+.skill, .interest{
+    font-weight: bold;
+    font-size: 22px;
+}
+.skills-page,
+.interests-page{
+    color: #262E51;
+}
+.skills-page{
+    background-color: #D2386A;
+}
+.interests-page{
+    background-color: lightcyan;
+    .petitions-container{
+        height: 60vh;
+        color:#262E51;
+    
+        #petitions-list{
+            .petitions-list-item{
+                border-bottom: 1px solid #262E51;
+
+                a:first-child{
+                    width:50%
+                }
+    
+                button{
+                    background: #262E51;
+                    color:lightcyan;
+                    &:hover,
+                    &:active{
+                        background-color: lightcyan;
+                        color: #262E51;
+                        border:1px solid #262E51 ;
+                    }
+                }
+            }
+        }
+    }
+}
+.petitions-container{
+    color:lightcyan;
+    padding: 0 20px;
+    height: 60vh;
+
+    #petitions-list{
+        margin-top: 20px;
+        a{
+            text-decoration: underline;
+            margin:  2% 0;;
+        }
+        .petitions-list-item{
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid lightcyan;
+            a:first-child{
+                width:50%
+            }
+
+            button{
+                background: lightcyan;
+                padding: 10px 20px;
+                border-radius: 8px;
+                border: none;
+                color:#262E51;
+                font-weight: 600;
+                &:hover,
+                &:active{
+                    background-color: #262E51;
+                    color: lightcyan;
+                }
+            }
+        }
+    }
 }

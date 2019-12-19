@@ -5,7 +5,7 @@ import 'firebase/firestore';
 
 import { Link, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { addItem } from '../../services/database';
+import { addItem, deleteItem } from '../../services/database';
 
 import '../Skills/skills.scss';
 import Header from '../../components/Header';
@@ -27,9 +27,12 @@ const Interest = ({ history }) => {
   } = user;
   const [results, setResults] = useState([]);
   const [matchedResults, setMatchedResults] = useState([]);
+  const [matchedResultIds, setMatchedResultIds] = useState([]);
+  const [specificMatchId, setSpecificMatchId] = useState('');
   const [stateGiver, setStateGiver] = useState('pending');
   const [stateReceiver, setStateReceiver] = useState('pending');
-  const [idReceiver, setStateIdReceiver] = useState([]);
+  const [idReceiver, setStateIdReceiver] = useState(id);
+  const [idGiver, setStateIdGiver] = useState('');
 
 
   const enterProfile = (id) => {
@@ -37,7 +40,8 @@ const Interest = ({ history }) => {
   };
 
   useEffect(() => {
-    
+    console.log(idReceiver);
+    console.log(id);
     /*  getAllFiltered({
       collection: 'users',
       filterDistrict: { field: 'district', condition: '==', value: district },
@@ -90,7 +94,6 @@ const Interest = ({ history }) => {
       .then((snapshot) => {
         if (snapshot.empty) {
           console.log('No matching documents.');
-          return;
         }
         const matchedResults = [];
         snapshot.forEach((doc) => {
@@ -98,11 +101,14 @@ const Interest = ({ history }) => {
             id: doc.id,
             ...doc.data(),
           });
+          matchedResultIds.push({
+            id: doc.id,
+          });
         });
-  
-        setMatchedResults(matchedResults);
-        console.log(matchedResults);
 
+        setMatchedResults(matchedResults);
+        setMatchedResultIds(matchedResultIds);
+        console.log(matchedResultIds);
       })
       .catch((err) => {
         console.log('Error getting documents', err);
@@ -110,68 +116,106 @@ const Interest = ({ history }) => {
   }, []);
 
 
-  
-  const idGiver = id;
-  
-  const handleAccept = async (idReceiver, stateReceiver) => {
+  const handleAccept = async (idGiver, stateReceiver, specificMatchId) => {
     if (!matchedResults) {
       const result = await addItem(
         'matches',
         {
-          idGiver, idReceiver, interest, stateGiver, stateReceiver,
+          id, idReceiver, interest, stateGiver, stateReceiver,
         },
       );
       if (result) {
         setStateGiver(stateGiver);
         setStateReceiver(stateReceiver);
         console.log(stateReceiver);
-        setStateIdReceiver(idReceiver);
+        setStateIdGiver(idGiver);
       }
     } else {
+      console.log('id:', id);
+      console.log('idReciever', idReceiver);
+      console.log('idGiver', idGiver);
       const db = getDbInstance();
-      await db.collection("matches").doc('a04G6SH0pG2eQCRdGjcx').update({
+
+      db.collection('matches')
+        .where('id', '==', idGiver)
+        .where('idReceiver', '==', id)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, ' => ', doc.data());
+            const specificMatchId = doc.id;
+          });
+          console.log(specificMatchId);
+          setSpecificMatchId(specificMatchId);
+          db.collection('matches').doc(specificMatchId).update({
+            stateReceiver: 'accepted',
+          });
+        })
+        .catch((error) => {
+          console.log('Error getting documents: ', error);
+        });
+
+      console.log(specificMatchId);
+      /*
+      const db = getDbInstance();
+      await db.collection('matches').doc(specificMatchId).update({
         stateReceiver: 'accepted',
       });
       console.log(stateReceiver);
-      document.getElementById('toggle').classList.add("block");
-      document.getElementById('accept').classList.add("hidden");
-      document.getElementById('deny').classList.add("hidden");
-      document.getElementById('result').classList.add("match");
+      document.getElementById('toggle').classList.add('block');
+      document.getElementById('accept').classList.add('hidden');
+      document.getElementById('deny').classList.add('hidden');
+      document.getElementById('result').classList.add('match'); */
     }
-    
   };
 
-  const handleDeny = async () => {
+  const handleDeny = async (idReceiver) => {
     const result = await deleteItem(
-      'matches',
+      'users',
       {
-        idGiver, idReceiver, interest, stateGiver, stateReceiver,
+        id, idReceiver, interest, stateGiver, stateReceiver,
       },
     );
-    if (result) {
+    const newResult = await deleteItem(
+      'matches',
+      {
+        id, idReceiver, interest, stateGiver, stateReceiver,
+      },
+    );
+    if (result || newResult) {
+      history.push('/interests');
     }
   };
+
   return (
     <>
       <Header />
-      <Link to="/">Home</Link>
-      <div className="skill-container">
-        <div>{interest}</div>
-      </div>
-      <div>The following neighbours are in need of your help:</div>
-      <div id="petitions-list">
-        {results.map((result, i) => (
-          <div key={i}>
-            <div>
-              <a id="result" onClick={() => enterProfile(result.id)} key={i.id}>
-                {result.name}
-              </a>
-              <button id="accept" onClick={() => handleAccept(result.id, 'accepted')}>Yes</button>
-              <button id="toggle" className='hidden' >Complete</button>
-              <button id="deny" onClick={(handleDeny)}>No</button>
-            </div>
+      <div className="interests-page">
+        <div className="interest-container">
+        You are currently interested in:
+          <div className="interest">{interest}</div>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+          <path fill="#D2386A" fillOpacity="1" d="M0,192L48,186.7C96,181,192,171,288,186.7C384,203,480,245,576,234.7C672,224,768,160,864,138.7C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" />
+        </svg>
+        <div className="petitions-container">
+          <div>These neighbours can help you with this:</div>
+          <div id="petitions-list">
+            {results.map((result, i) => (
+              <div key={i}>
+                <div className="petitions-list-item">
+                  <a id="result" onClick={() => enterProfile(result.id)} key={i.id}>
+                    {result.name}
+                  </a>
+                  <button id="accept" onClick={() => handleAccept(result.id, 'accepted', result.match)}>Yes</button>
+                  <button id="deny" onClick={() => handleDeny(result.id)}>No</button>
+                  <button id="toggle" className="hidden">Complete</button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
       <Footer />
     </>

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route
-} from "react-router-dom";
+  Route,
+} from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { setUser } from './redux/actions/userActions';
@@ -18,6 +18,7 @@ import Skills from './pages/Skills';
 import Interests from './pages/Interests';
 import EditProfile from './pages/EditProfile';
 import Details from './pages/Details';
+import Matches from './pages/Matches';
 
 
 function App({ setUserRedux }) {
@@ -30,19 +31,19 @@ function App({ setUserRedux }) {
         if (usuario) {
           setUserRedux(usuario);
         } else {
-          console.log("todavía se está registrando");
+          console.log('todavía se está registrando');
         }
       } else {
         setUserRedux(null);
       }
       setIsLoading(false);
-    })
+    });
 
     return () => {
       cancelObserver();
-    }
+    };
   }, [setUserRedux]);
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <>
@@ -53,6 +54,7 @@ function App({ setUserRedux }) {
           <Route path="/profile" component={Profile} />
           <Route path="/skills" component={Skills} />
           <Route path="/interests" component={Interests} />
+          <Route path="/matches" component={Matches} />
           <Route path="/editprofile" component={EditProfile} />
           <Route path="/details/:id" component={Details} />
           <Route path="/" component={Welcome} />
@@ -62,11 +64,8 @@ function App({ setUserRedux }) {
   );
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setUserRedux: (user) => dispatch(setUser(user))
-  }
-}
+const mapDispatchToProps = (dispatch) => ({
+  setUserRedux: (user) => dispatch(setUser(user)),
+});
 
 export default connect(null, mapDispatchToProps)(App);
-

@@ -1,3 +1,50 @@
+
+body{
+    background-color: lightcyan;
+}
+.profile,
+.details-page{
+    min-height: 90vh;
+}
 img{
     height: 200px;
+
 }
+.container{
+    display: flex;
+}
+.content{
+    padding: 20px;
+    color: #262E51;
+    font-size: 16px;
+    div{
+        padding: 5px;
+    }
+}
+.frame {
+    height: 250px;
+    background: transparent no-repeat center;
+    background-size: cover;
+  }
+  .links-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      margin: 2% 0 5% 0;
+      a{
+        color:#D2386A;
+        font-family:'Cherry Cream Soda', cursive;
+        font-size: 18px;
+      }
+  }
+  @media only screen and (max-width: 768px) {
+    .frame {
+         height: 200px;
+     }
+     .links-container{
+         flex-direction: column;
+         padding-left: 20px;
+         margin: 2% 0 10% 0;
+
+     }
+   }

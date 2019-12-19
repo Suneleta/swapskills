@@ -68,7 +68,7 @@ async function addItemWithId(collection, item, id) {
 }
 async function updateItem(collection, item) {
   const db = getDbInstance();
-  const result = await db.collection(collection).update(item)
+  const result = await db.collection(collection).update(item);
   return !!result.id;
 }
 

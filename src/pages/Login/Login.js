@@ -13,7 +13,6 @@ import { 
 
 import '../Signup/Signup.scss';
 
-
 const Login = ({ history }) => {
   const [formData, setFormData] = useState({ email: '', password: ''});
   const [error, setError] = useState('');
@@ -64,7 +63,7 @@ const Login = ({ history }) => {
                 value={formData.password} 
                 onChange={value => setFormData({ ...formData, password: value })} 
               />
-              <a className="signup" onClick={handleSubmitForm}>Login</a>
+              <button className="signup" onClick={handleSubmitForm}>Login</button>
             </form>
   </div>
   <Footer />

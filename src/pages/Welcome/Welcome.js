@@ -12,7 +12,7 @@ function Welcome({ history }) {
   return (
     <>
       <Header />
-        <div id="wrapper">
+        <div id="wrapper" className="welcome-page">
           <div id="svg_container">
             <svg viewBox="0 0 580 580">
               <g id="Layer_1" class="svg_layer">

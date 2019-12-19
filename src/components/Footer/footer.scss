@@ -6,14 +6,14 @@ $accent-color:#D2386A;
 
 .footer{
     z-index:1;
-    background-color: $accent-color;
+    background-color: $primary-color;
     display: flex;
     height: 50px;
     display: flex;
     justify-content: space-between;
-    position: absolute;
-    bottom: 0;
     width: 100%;
+    position: sticky;
+    bottom: 0;
 
     a,span{
         text-decoration: none;
@@ -28,6 +28,9 @@ $accent-color:#D2386A;
         justify-content: space-between;
 
   
+    }
+    a:hover{
+        color: $accent-color
     }
     &_list{
         display: flex;
