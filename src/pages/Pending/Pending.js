@@ -25,7 +25,7 @@ function Pending({ match, history }) {
               <span ihref="#" className="brand-logo">Waiting...</span>
             </div>
             <div className="pending_content_text">
-    Seems that your neighbout hasn´t seen you on their dashboard yet. Why not contact them by email?
+    Seems that your neighbour hasn´t seen you on their dashboard yet. Why not contact them by email?
             </div>
             <div className="links-container">
               <br />

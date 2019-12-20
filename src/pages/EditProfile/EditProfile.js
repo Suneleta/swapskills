@@ -67,9 +67,6 @@ function EditProfile({ history }) {
       <div className="edit-profile">
         <div className="container">
           <form onSubmit={UpdateData}>
-            <input placeholder={name} disabled />
-            <input placeholder={password} type="password" disabled />
-            <input placeholder={email} disabled />
             <div className="question">Changed location?</div>
             <div className="select">
               <select id="district">
