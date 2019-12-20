@@ -5,7 +5,7 @@ import 'firebase/firestore';
 
 import { Link, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { addItem, deleteItem } from '../../services/database';
+import { addItem, deleteItem, getDbInstance } from '../../services/database';
 import { registerAuthObserver } from '../../services/auth';
 
 
@@ -13,21 +13,6 @@ import '../Skills/skills.scss';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
-function parseDoc(doc) {
-  return {
-    id: doc.id,
-    ...doc.data(),
-  };
-}
-
-
-function getDbInstance() {
-  let db;
-  if (!db || db._isTerminated) {
-    db = firebase.firestore();
-  }
-  return db;
-}
 
 const Interest = ({ history }) => {
   const user = useSelector((state) => state.user);
@@ -35,26 +20,23 @@ const Interest = ({ history }) => {
     id, district, interest, skill,
   } = user;
   const [results, setResults] = useState([]);
-  const [matchedResults, setMatchedResults] = useState([]);
-  const [matchedResultIds, setMatchedResultIds] = useState([]);
-  const [specificMatchId, setSpecificMatchId] = useState('');
   const [stateGiver, setStateGiver] = useState('pending');
   const [stateReceiver, setStateReceiver] = useState('pending');
+  const [specificMatchId, setSpecificMatchId] = useState('');
   const [idReceiver, setStateIdReceiver] = useState(id);
   const [idGiver, setIdGiver] = useState('');
+  const [setMessageWaiting, messageWaiting] = useState('');
+  const [setMessageSuccess, messageSuccess] = useState('');
 
 
   const enterProfile = (id) => {
     history.push(`/details/${id}`);
   };
 
-  let cancelObserver;
-
   useEffect(() => {
-    console.log(idReceiver);
-    console.log(id);
-    if (cancelObserver) cancelObserver();
-    cancelObserver = registerAuthObserver(async (user) => {
+    if (!'users') return <div className="loading">Loading...</div>;
+
+    if (user) {
       const db = getDbInstance();
       const usersRef = db.collection('users');
       const query = usersRef
@@ -72,35 +54,29 @@ const Interest = ({ history }) => {
               id: doc.id,
               ...doc.data(),
             });
-            console.log(newResults);
           });
-
+          console.log(newResults);
           setResults(newResults);
         })
         .catch((err) => {
           console.log('Error getting documents', err);
         });
-      return () => {
-        cancelObserver();
-      };
-    });
+    }
+    return () => {
+    };
   }, []);
 
 
   const handleAccept = async (idGiver, stateReceiver, specificMatchId) => {
     //* **** GET MATCH BTWN THIS GIVER AND THIS RECEIVER --- ITS ID */
+    const shared = interest;
     const db = getDbInstance();
     const matchesRef = db.collection('matches');
     const queryM = matchesRef
-      .where('id', '==', idGiver)
+      .where('idGiver', '==', idGiver)
       .where('idReceiver', '==', id)
       .get()
       .then((snapshot) => {
-        if (snapshot.empty) {
-          console.log('No matching documents.');
-          return;
-        }
-        let specificMatchId;
         snapshot.forEach((doc) => {
           console.log(doc.id, ' => ', doc.data());
           specificMatchId = doc.id;
@@ -108,33 +84,31 @@ const Interest = ({ history }) => {
         });
         setSpecificMatchId(specificMatchId);
         console.log(specificMatchId);
-        db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
-          stateReceiver: 'accepted',
-        });
+        if (specificMatchId) {
+          db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
+            stateReceiver: 'accepted',
+          });
+        } else {
+          const result = addItem(
+            'matches',
+            {
+              idGiver, idReceiver, shared, stateGiver, stateReceiver,
+            },
+          );
+          if (result) {
+            setStateGiver(stateGiver);
+            setStateReceiver(stateReceiver);
+            setIdGiver(idGiver);
+          }
+        }
       })
       .catch((err) => {
         console.log('Error getting documents', err);
       });
 
-    //* IF THERE´S NO MATCH BTWN THIS GIVER AND RECEIVER CREATE ONE */
-
-    if (!specificMatchId) {
-      const result = await addItem(
-        'matches',
-        {
-          idGiver, id, interest, stateGiver, stateReceiver,
-        },
-      );
-      if (result) {
-        setStateGiver(stateGiver);
-        setStateReceiver(stateReceiver);
-        console.log(stateReceiver);
-        setIdGiver(idGiver);
-      }
-    }
     //* IF THERE´S MATCH BTWN THIS GIVER AND RECEIVER UPDATE STATE*/
 
-    else {
+    /* if (specificMatchId) {
       console.log(specificMatchId);
       db.collection('matches').doc(specificMatchId).update({
         stateReceiver: 'accepted',
@@ -142,23 +116,32 @@ const Interest = ({ history }) => {
       setSpecificMatchId(specificMatchId);
       console.log(specificMatchId);
     }
+
+    //* IF THERE´S NO MATCH BTWN THIS GIVER AND RECEIVER CREATE ONE */
+
+    /* else {
+      const result = await addItem(
+        'matches',
+        {
+          idGiver, idReceiver, shared, stateGiver, stateReceiver,
+        },
+      );
+      if (result) {
+        setStateGiver(stateGiver);
+        setStateReceiver(stateReceiver);
+        console.log(stateReceiver);
+        setIdGiver(idGiver);
+        console.log('idGiver: ', idGiver);
+      }
+    } */
   };
 
-  const handleDeny = async (idReceiver) => {
-    const result = await deleteItem(
-      'users',
-      {
-        id, idReceiver, interest, stateGiver, stateReceiver,
-      },
-    );
-    const newResult = await deleteItem(
-      'matches',
-      {
-        id, idReceiver, interest, stateGiver, stateReceiver,
-      },
-    );
-    if (result || newResult) {
-      history.push('/interests');
+  const handleDeny = async () => {
+    if (specificMatchId) {
+      const result = await deleteItem('matches', specificMatchId);
+      if (result) {
+        history.push('/interests');
+      }
     }
   };
 

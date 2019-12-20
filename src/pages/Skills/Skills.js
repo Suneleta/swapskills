@@ -5,7 +5,9 @@ import 'firebase/firestore';
 
 import { Link, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { addItem } from '../../services/database';
+import {
+  addItem, deleteItem, getDbInstance, getMatchId, updateByField,
+} from '../../services/database';
 import { registerAuthObserver } from '../../services/auth';
 
 import Header from '../../components/Header';
@@ -13,21 +15,6 @@ import Footer from '../../components/Footer';
 
 import './skills.scss';
 
-function parseDoc(doc) {
-  return {
-    id: doc.id,
-    ...doc.data(),
-  };
-}
-
-
-function getDbInstance() {
-  let db;
-  if (!db || db._isTerminated) {
-    db = firebase.firestore();
-  }
-  return db;
-}
 
 const Skill = ({ history }) => {
   const user = useSelector((state) => state.user);
@@ -35,12 +22,13 @@ const Skill = ({ history }) => {
     id, district, interest, skill,
   } = user;
   const [results, setResults] = useState([]);
-  const [matchedResults, setMatchedResults] = useState([]);
   const [stateGiver, setStateGiver] = useState('pending');
   const [stateReceiver, setStateReceiver] = useState('pending');
   const [specificMatchId, setSpecificMatchId] = useState('');
   const [idReceiver, setIdReceiver] = useState('');
-
+  const [idGiver, setIdGiver] = useState(id);
+  const [setMessageWaiting, messageWaiting] = useState('');
+  const [setMessageSuccess, messageSuccess] = useState('');
 
   const enterProfile = (id) => {
     history.push(`/details/${id}`);
@@ -78,26 +66,27 @@ const Skill = ({ history }) => {
         });
     }
 
-
     return () => {
     };
   }, []);
 
 
-  const handleAccept = async (idReceiver, stateGiver, specificMatchId) => {
+  const handleAccept = async (idReceiver, stateGiver, specificMatchId, messageSuccess, messageWaiting) => {
     //* **** GET MATCH BTWN THIS GIVER AND THIS RECEIVER --- ITS ID */
+    // const specificMatchId = await getMatchId('matches', id, idReceiver);
+    // console.log('matchedId: ', specificMatchId);
+    // setSpecificMatchId(specificMatchId);
+    // const result = await updateByField(specificMatchId, 'stateGiver', 'accepted');
+    // console.log('result: ', result);
+
     const db = getDbInstance();
+    const shared = skill;
     const matchesRef = db.collection('matches');
     const queryM = matchesRef
-      .where('id', '==', id)
+      .where('idGiver', '==', id)
       .where('idReceiver', '==', idReceiver)
       .get()
       .then((snapshot) => {
-        if (snapshot.empty) {
-          console.log('No matching documents.');
-          return;
-        }
-        let specificMatchId;
         snapshot.forEach((doc) => {
           console.log(doc.id, ' => ', doc.data());
           specificMatchId = doc.id;
@@ -105,42 +94,58 @@ const Skill = ({ history }) => {
         });
         setSpecificMatchId(specificMatchId);
         console.log(specificMatchId);
-        db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
-          stateGiver: 'accepted',
-        });
+        if (specificMatchId) {
+          db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
+            stateGiver: 'accepted',
+          });
+        } else {
+          const result = addItem(
+            'matches',
+            {
+              idGiver, idReceiver, shared, stateGiver, stateReceiver,
+            },
+          );
+          if (result) {
+            setStateGiver(stateGiver);
+            setStateReceiver(stateReceiver);
+            setIdReceiver(idReceiver);
+          }
+        }
       })
       .catch((err) => {
         console.log('Error getting documents', err);
       });
-    //* IF THERE´S NO MATCH BTWN THIS GIVER AND RECEIVER CREATE ONE */
-    if (!specificMatchId) {
-      const result = await addItem(
-        'matches',
-        {
-          id, idReceiver, skill, stateGiver, stateReceiver,
-        },
-      );
-      if (result) {
-        setStateGiver(stateGiver);
-        setStateReceiver(stateReceiver);
-        setIdReceiver(idReceiver);
-      }
-    }
-    //* IF THERE´S MATCH BTWN THIS GIVER AND RECEIVER UPDATE STATE*/
-    else {
+
+    //* IF THERE´S MATCH BTWN THIS GIVER AND RECEIVER UPDATE STATE */
+    /* if (specificMatchId) {
       console.log(specificMatchId);
       db.collection('matches').doc(specificMatchId).update({
         stateGiver: 'accepted',
       });
       setSpecificMatchId(specificMatchId);
       console.log(specificMatchId);
+      messageWaiting = 'Pending';
+      //   messsageSuccess = 'Guess what? Your neighbour has already accepted you';
+      setMessageWaiting(messageWaiting);
+      console.log(messageWaiting);
+      //   setMessageSuccess(messsageSuccess);
+
     //  return <div>Thanks man!Remember to contact to get things done!</div>;
-    }
+    } else {
+      //* IF THERE´S NO MATCH BTWN THIS GIVER AND RECEIVER CREATE ONE */
   };
 
-  const handleDeny = async () => {
+  const handleDeny = async (idToDelete, matchId) => {
+    if (specificMatchId) {
+      const result = await deleteItem('matches', specificMatchId);
 
+      const filteredReceivers = results.filter((el) => el.id !== idToDelete);
+      setResults(filteredReceivers);
 
+      if (result) {
+        history.push('/skills');
+      }
+    }
   };
   return (
     <>
@@ -163,7 +168,7 @@ const Skill = ({ history }) => {
                     {result.name}
                   </a>
                   <button id="yes" onClick={() => handleAccept(result.id, 'accepted', result.match)}>Yes</button>
-                  <button id="no" onClick={() => handleDeny(result.id, 'denied', result.match)}>No</button>
+                  <button id="no" onClick={() => handleDeny(result.id, result.match)}>No</button>
                 </div>
               </div>
             ))}
