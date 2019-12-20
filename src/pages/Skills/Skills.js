@@ -27,8 +27,7 @@ const Skill = ({ history }) => {
   const [specificMatchId, setSpecificMatchId] = useState('');
   const [idReceiver, setIdReceiver] = useState('');
   const [idGiver, setIdGiver] = useState(id);
-  const [setMessageWaiting, messageWaiting] = useState('');
-  const [setMessageSuccess, messageSuccess] = useState('');
+
 
   const enterProfile = (id) => {
     history.push(`/details/${id}`);
@@ -71,7 +70,7 @@ const Skill = ({ history }) => {
   }, []);
 
 
-  const handleAccept = async (idReceiver, stateGiver, specificMatchId, messageSuccess, messageWaiting) => {
+  const handleAccept = async (idReceiver, stateGiver, specificMatchId) => {
     //* **** GET MATCH BTWN THIS GIVER AND THIS RECEIVER --- ITS ID */
     // const specificMatchId = await getMatchId('matches', id, idReceiver);
     // console.log('matchedId: ', specificMatchId);
@@ -98,6 +97,8 @@ const Skill = ({ history }) => {
           db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
             stateGiver: 'accepted',
           });
+          const messageSuccess = 'supermatch';
+          console.log(messageSuccess);
         } else {
           const result = addItem(
             'matches',
@@ -109,6 +110,8 @@ const Skill = ({ history }) => {
             setStateGiver(stateGiver);
             setStateReceiver(stateReceiver);
             setIdReceiver(idReceiver);
+            const messagePending = 'pending';
+            console.log(messagePending);
           }
         }
       })

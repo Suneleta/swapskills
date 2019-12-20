@@ -3,19 +3,12 @@ import firebase from 'firebase';
 
 import { Link, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { getDbInstance } from '../../services/database';
 
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
-
-function getDbInstance() {
-  let db;
-  if (!db || db._isTerminated) {
-    db = firebase.firestore();
-  }
-  return db;
-}
-function Profile({ match, history }) {
+function Matches({ match, history }) {
   const user = useSelector((state) => state.user);
   const {
     id, name, email, district, interest, skill, file,
@@ -32,7 +25,7 @@ function Profile({ match, history }) {
     const db = getDbInstance();
     console.log(id);
     db.collection('matches')
-      .where('id', '==', id)
+      .where('idGiver', '==', id)
       .where('stateGiver', '==', 'accepted')
       .where('stateReceiver', '==', 'accepted')
       .get()
@@ -110,4 +103,4 @@ Matches to receive services:&nbsp;
   );
 }
 
-export default Profile;
+export default Matches;

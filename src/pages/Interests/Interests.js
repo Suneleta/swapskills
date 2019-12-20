@@ -88,6 +88,8 @@ const Interest = ({ history }) => {
           db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
             stateReceiver: 'accepted',
           });
+          const messageSuccess = 'supermatch';
+          console.log(messageSuccess);
         } else {
           const result = addItem(
             'matches',
@@ -99,6 +101,8 @@ const Interest = ({ history }) => {
             setStateGiver(stateGiver);
             setStateReceiver(stateReceiver);
             setIdGiver(idGiver);
+            const messagePending = 'pending';
+            console.log(messagePending);
           }
         }
       })
