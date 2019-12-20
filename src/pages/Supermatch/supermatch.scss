@@ -1,0 +1,52 @@
+.supermatch{background-color:lightcyan;}
+.pending{background-color:#262E51;}
+
+.supermatch,
+.pending{
+    &_content{
+        text-align: center;
+        img{
+        width: 375px;
+        height: auto;
+        }
+        &_title{
+            margin-top: 5%;
+        }
+        &_text{
+            margin: 6% auto;
+            font-family: 'Roboto';
+            color: lightcyan;
+            padding: 0 20px;
+        }
+    }
+    .links-container{
+        margin: 0;
+        padding: 5% 2%;
+    }
+
+}
+.supermatch_content{
+    &_text{
+        color:#262E51;
+    }
+}
+.brand-logo {
+    color: #fff;
+    display: inline-block;
+    font-size: 2.1rem;
+    padding: 0;
+    white-space: nowrap;
+    font-family: 'Pacifico', cursive;
+    text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 6px #262E51, 0 0 8px #262E51, 0 0 10px #262E51, 0 0 12px #262E51, 0 0 14px #262E51;
+    animation: glow .59s infinite alternate;
+}
+/* Animation as suggested by Ismail Ghallou */
+@keyframes glow {
+    to {
+     text-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 12px #D2386A, 0 0 16px #D2386A, 0 0 20px #D2386A, 0 0 24px #D2386A, 0 0 28px #D2386A;
+    }
+  }
+  .brand-logo{
+          text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 6px #262E51, 0 0 8px #262E51, 0 0 10px #262E51, 0 0 12px #262E51, 0 0 14px #262E51;
+          animation: glow .59s infinite alternate;
+  }

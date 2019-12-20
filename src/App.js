@@ -19,6 +19,8 @@ import Interests from './pages/Interests';
 import EditProfile from './pages/EditProfile';
 import Details from './pages/Details';
 import Matches from './pages/Matches';
+import Pending from './pages/Pending';
+import Supermatch from './pages/Supermatch';
 
 
 function App({ setUserRedux }) {
@@ -55,6 +57,8 @@ function App({ setUserRedux }) {
           <Route path="/skills" component={Skills} />
           <Route path="/interests" component={Interests} />
           <Route path="/matches" component={Matches} />
+          <Route path="/supermatch" component={Supermatch} />
+          <Route path="/pending" component={Pending} />
           <Route path="/editprofile" component={EditProfile} />
           <Route path="/details/:id" component={Details} />
           <Route path="/" component={Welcome} />

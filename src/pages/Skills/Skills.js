@@ -27,6 +27,8 @@ const Skill = ({ history }) => {
   const [specificMatchId, setSpecificMatchId] = useState('');
   const [idReceiver, setIdReceiver] = useState('');
   const [idGiver, setIdGiver] = useState(id);
+  const [messagePending, setMessagePending] = useState('pending');
+  const [messageSuccess, setMessageSuccess] = useState('supermatch');
 
 
   const enterProfile = (id) => {
@@ -78,6 +80,7 @@ const Skill = ({ history }) => {
     // const result = await updateByField(specificMatchId, 'stateGiver', 'accepted');
     // console.log('result: ', result);
 
+
     const db = getDbInstance();
     const shared = skill;
     const matchesRef = db.collection('matches');
@@ -97,8 +100,9 @@ const Skill = ({ history }) => {
           db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
             stateGiver: 'accepted',
           });
-          const messageSuccess = 'supermatch';
+          setMessageSuccess(messageSuccess);
           console.log(messageSuccess);
+          history.push('/supermatch');
         } else {
           const result = addItem(
             'matches',
@@ -110,32 +114,15 @@ const Skill = ({ history }) => {
             setStateGiver(stateGiver);
             setStateReceiver(stateReceiver);
             setIdReceiver(idReceiver);
-            const messagePending = 'pending';
+            setMessagePending(messagePending);
             console.log(messagePending);
+            history.push('/pending');
           }
         }
       })
       .catch((err) => {
         console.log('Error getting documents', err);
       });
-
-    //* IF THERE´S MATCH BTWN THIS GIVER AND RECEIVER UPDATE STATE */
-    /* if (specificMatchId) {
-      console.log(specificMatchId);
-      db.collection('matches').doc(specificMatchId).update({
-        stateGiver: 'accepted',
-      });
-      setSpecificMatchId(specificMatchId);
-      console.log(specificMatchId);
-      messageWaiting = 'Pending';
-      //   messsageSuccess = 'Guess what? Your neighbour has already accepted you';
-      setMessageWaiting(messageWaiting);
-      console.log(messageWaiting);
-      //   setMessageSuccess(messsageSuccess);
-
-    //  return <div>Thanks man!Remember to contact to get things done!</div>;
-    } else {
-      //* IF THERE´S NO MATCH BTWN THIS GIVER AND RECEIVER CREATE ONE */
   };
 
   const handleDeny = async (idToDelete, matchId) => {
@@ -166,12 +153,27 @@ const Skill = ({ history }) => {
           <div id="petitions-list">
             {results.map((result, i) => (
               <div key={i}>
+
                 <div className="petitions-list-item">
                   <a onClick={() => enterProfile(result.id)} key={i.id}>
                     {result.name}
                   </a>
-                  <button id="yes" onClick={() => handleAccept(result.id, 'accepted', result.match)}>Yes</button>
-                  <button id="no" onClick={() => handleDeny(result.id, result.match)}>No</button>
+                  <button
+                    // className={`button ${specificMatchId ? 'green' : ''}`}
+                    type="button"
+                    id="yes"
+                    onClick={() => handleAccept(result.id, 'accepted', result.match, specificMatchId)}
+                    key={i.id}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    type="button"
+                    id="no"
+                    onClick={() => handleDeny(result.id, result.match)}
+                  >
+                      No
+                  </button>
                 </div>
               </div>
             ))}

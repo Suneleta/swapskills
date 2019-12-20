@@ -25,8 +25,8 @@ const Interest = ({ history }) => {
   const [specificMatchId, setSpecificMatchId] = useState('');
   const [idReceiver, setStateIdReceiver] = useState(id);
   const [idGiver, setIdGiver] = useState('');
-  const [setMessageWaiting, messageWaiting] = useState('');
-  const [setMessageSuccess, messageSuccess] = useState('');
+  const [messagePending, setMessagePending] = useState('pending');
+  const [messageSuccess, setMessageSuccess] = useState('supermatch');
 
 
   const enterProfile = (id) => {
@@ -69,8 +69,8 @@ const Interest = ({ history }) => {
 
   const handleAccept = async (idGiver, stateReceiver, specificMatchId) => {
     //* **** GET MATCH BTWN THIS GIVER AND THIS RECEIVER --- ITS ID */
-    const shared = interest;
     const db = getDbInstance();
+    const shared = interest;
     const matchesRef = db.collection('matches');
     const queryM = matchesRef
       .where('idGiver', '==', idGiver)
@@ -88,8 +88,9 @@ const Interest = ({ history }) => {
           db.collection('matches').doc(specificMatchId).update({ // Update state of giver to accepted
             stateReceiver: 'accepted',
           });
-          const messageSuccess = 'supermatch';
+          setMessageSuccess(messageSuccess);
           console.log(messageSuccess);
+          history.push('/supermatch');
         } else {
           const result = addItem(
             'matches',
@@ -101,43 +102,15 @@ const Interest = ({ history }) => {
             setStateGiver(stateGiver);
             setStateReceiver(stateReceiver);
             setIdGiver(idGiver);
-            const messagePending = 'pending';
+            setMessagePending(messagePending);
             console.log(messagePending);
+            history.push('/pending');
           }
         }
       })
       .catch((err) => {
         console.log('Error getting documents', err);
       });
-
-    //* IF THERE´S MATCH BTWN THIS GIVER AND RECEIVER UPDATE STATE*/
-
-    /* if (specificMatchId) {
-      console.log(specificMatchId);
-      db.collection('matches').doc(specificMatchId).update({
-        stateReceiver: 'accepted',
-      });
-      setSpecificMatchId(specificMatchId);
-      console.log(specificMatchId);
-    }
-
-    //* IF THERE´S NO MATCH BTWN THIS GIVER AND RECEIVER CREATE ONE */
-
-    /* else {
-      const result = await addItem(
-        'matches',
-        {
-          idGiver, idReceiver, shared, stateGiver, stateReceiver,
-        },
-      );
-      if (result) {
-        setStateGiver(stateGiver);
-        setStateReceiver(stateReceiver);
-        console.log(stateReceiver);
-        setIdGiver(idGiver);
-        console.log('idGiver: ', idGiver);
-      }
-    } */
   };
 
   const handleDeny = async () => {
@@ -166,12 +139,11 @@ const Interest = ({ history }) => {
             {results.map((result, i) => (
               <div key={i}>
                 <div className="petitions-list-item">
-                  <a id="result" onClick={() => enterProfile(result.id)} key={i.id}>
+                  <a onClick={() => enterProfile(result.id)} key={i.id}>
                     {result.name}
                   </a>
-                  <button id="accept" onClick={() => handleAccept(result.id, 'accepted', result.match)}>Yes</button>
-                  <button id="deny" onClick={() => handleDeny(result.id)}>No</button>
-                  <button id="toggle" className="hidden">Complete</button>
+                  <button type="button" onClick={() => handleAccept(result.id, 'accepted', result.match)} key={i.id}>Yes</button>
+                  <button type="button" onClick={() => handleDeny(result.id, result.match)}>No</button>
                 </div>
               </div>
             ))}

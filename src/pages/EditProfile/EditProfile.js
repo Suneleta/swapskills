@@ -36,6 +36,7 @@ function EditProfile({ history }) {
     event.preventDefault();
     const db = getDbInstance();
     await db.collection('users').doc(id).update({
+      id,
       district: document.getElementById('district').value || district,
       skill: document.getElementById('skill').value || skill,
       interest: document.getElementById('interest').value || interest,
@@ -45,6 +46,7 @@ function EditProfile({ history }) {
       file,
     });
     const userToRedux = {
+      id,
       district: document.getElementById('district').value || district,
       skill: document.getElementById('skill').value || skill,
       interest: document.getElementById('interest').value || interest,
