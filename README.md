@@ -1,68 +1,83 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# SINGING-LAB
 
-In the project directory, you can run:
+# ![](./images/skylab-coders-logo.png)
 
-### `yarn start`
+## TARGET
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+This project is designed to help communities grow stronger and build ties between people in the neigbourhood. The target is to serve people´s needs easily and help create social bonds that contribute to better everyday life and the overall happiness of the individual.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## TECHNOLOGIES
 
-### `yarn test`
+| Transversal | Server-side | Client-side | Testing |
+| :---------: |:-------: |:----------: |:---------: |
+| Agile Methodology/Scrum | Node.js | React | Cypress |
+| javascript (ES5, ES6) | firebase | SCSS |
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Other: [Trello](https://trello.com/b/W0oIqzno/swapskills), Git & Github, Sketch. 
 
-### `yarn build`
+## Functional description:
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+In this application users can signup introducing their name, email, a password of their choice, the area they live in (currently it includes only neighbourhoods in Barcelona), the skill/service they are willing to offer to the community as well as the service they need. Once logged in the user visits his profile page where he can edit the fields of area, skill and service they are interested in as well as find links to the skills page, the interests page and the statistics of the times they matched other people in the community. In the skills as well as in the interests page the user can see the neighbours that offer the service or require his skills and he can click yes or no. Yes will lead him to a new page that informs him if the neighbour has already matched him or not and will direct him to contact. No will delete the match from the database preventing the possibility of a supermatch.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### User Journeys
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The following picture describes the different ways in which the user can interact with our project:
 
-### `yarn eject`
+![](./images/user-cases.png)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Technical description:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### DATABASE MODEL
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Below you can see the JSON structure of the two collections created in Firestore´s database.      
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+![](./images/data-model.png)
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## DESIGN (screenshots)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Home Page
 
-### Code Splitting
+![](./images/home-page.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+### Login
 
-### Analyzing the Bundle Size
+![](./images/login.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+### Register
 
-### Making a Progressive Web App
+![](./images/register.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+### Profile
 
-### Advanced Configuration
+![](./images/profile.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+### Skills page
 
-### Deployment
+![](./images/skills.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+### Interests page
 
-### `yarn build` fails to minify
+![](./images/interests.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### Match statistics
+![](./images/matches.png)
+
+
+### Supermatch
+
+![](./images/supermatch.png)
+
+### Waiting
+
+![](./images/waiting.png)
+
+## PROJECT DEMO
+
+You can see a demo of the project [here](https://swapskill-456e8.firebaseapp.com//)
+
+## QR CODE
+
+![](./images/qrcode.png)
+
